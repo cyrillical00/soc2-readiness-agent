@@ -1,0 +1,609 @@
+{
+  "controls": [
+    {
+      "control_id": "CC1.1",
+      "category": "Security",
+      "tsc": "CC",
+      "title": "COSO Principle 1 — Commitment to Integrity and Ethics",
+      "description": "The entity demonstrates a commitment to integrity and ethical values.",
+      "required_evidence": ["code_of_conduct_policy", "security_awareness_training_records", "background_check_policy"],
+      "data_sources": ["confluence", "manual_upload"],
+      "thresholds": {}
+    },
+    {
+      "control_id": "CC1.2",
+      "category": "Security",
+      "tsc": "CC",
+      "title": "Board Independence and Oversight",
+      "description": "The board of directors demonstrates independence from management and exercises oversight of internal control.",
+      "required_evidence": ["board_charter", "audit_committee_charter"],
+      "data_sources": ["confluence", "manual_upload"],
+      "thresholds": {}
+    },
+    {
+      "control_id": "CC1.3",
+      "category": "Security",
+      "tsc": "CC",
+      "title": "Organizational Structures and Reporting Lines",
+      "description": "Management establishes reporting lines and authority appropriate for objectives.",
+      "required_evidence": ["org_chart", "roles_responsibilities_policy"],
+      "data_sources": ["confluence", "manual_upload"],
+      "thresholds": {}
+    },
+    {
+      "control_id": "CC2.1",
+      "category": "Security",
+      "tsc": "CC",
+      "title": "Information Quality and Communication",
+      "description": "The entity obtains or generates and uses relevant, quality information to support the functioning of internal control.",
+      "required_evidence": ["information_security_policy", "data_classification_policy"],
+      "data_sources": ["confluence", "manual_upload"],
+      "thresholds": {}
+    },
+    {
+      "control_id": "CC2.2",
+      "category": "Security",
+      "tsc": "CC",
+      "title": "Internal Communication of Control Information",
+      "description": "The entity internally communicates information including objectives and responsibilities for internal control.",
+      "required_evidence": ["security_policy_acknowledgment_rate", "training_completion_rate"],
+      "data_sources": ["confluence", "manual_upload"],
+      "thresholds": {
+        "training_completion_rate": {"compliant": 90, "partial": 70}
+      }
+    },
+    {
+      "control_id": "CC2.3",
+      "category": "Security",
+      "tsc": "CC",
+      "title": "External Communication",
+      "description": "The entity communicates with external parties regarding matters affecting internal control functioning.",
+      "required_evidence": ["vendor_communication_policy", "responsible_disclosure_policy"],
+      "data_sources": ["confluence", "manual_upload"],
+      "thresholds": {}
+    },
+    {
+      "control_id": "CC3.1",
+      "category": "Security",
+      "tsc": "CC",
+      "title": "Risk Assessment Objectives",
+      "description": "The entity specifies objectives with sufficient clarity to enable the identification and assessment of risk.",
+      "required_evidence": ["risk_assessment_document", "risk_register"],
+      "data_sources": ["confluence", "manual_upload"],
+      "thresholds": {}
+    },
+    {
+      "control_id": "CC3.2",
+      "category": "Security",
+      "tsc": "CC",
+      "title": "Risk Identification and Analysis",
+      "description": "The entity identifies risks to the achievement of its objectives across the entity and analyzes risks.",
+      "required_evidence": ["risk_register", "risk_assessment_frequency"],
+      "data_sources": ["confluence", "jira", "manual_upload"],
+      "thresholds": {}
+    },
+    {
+      "control_id": "CC3.3",
+      "category": "Security",
+      "tsc": "CC",
+      "title": "Fraud Risk Assessment",
+      "description": "The entity considers the potential for fraud in assessing risks to the achievement of objectives.",
+      "required_evidence": ["fraud_risk_assessment", "whistleblower_policy"],
+      "data_sources": ["confluence", "manual_upload"],
+      "thresholds": {}
+    },
+    {
+      "control_id": "CC4.1",
+      "category": "Security",
+      "tsc": "CC",
+      "title": "Ongoing and Separate Evaluations",
+      "description": "The entity selects, develops, and performs ongoing and/or separate evaluations to ascertain control deficiencies.",
+      "required_evidence": ["internal_audit_reports", "vulnerability_scan_reports", "penetration_test_results"],
+      "data_sources": ["aws", "gcp", "azure", "confluence", "manual_upload"],
+      "thresholds": {}
+    },
+    {
+      "control_id": "CC4.2",
+      "category": "Security",
+      "tsc": "CC",
+      "title": "Evaluation and Communication of Deficiencies",
+      "description": "The entity evaluates and communicates internal control deficiencies in a timely manner.",
+      "required_evidence": ["deficiency_tracking", "remediation_sla_compliance"],
+      "data_sources": ["jira", "manual_upload"],
+      "thresholds": {
+        "remediation_sla_compliance": {"compliant": 85, "partial": 70}
+      }
+    },
+    {
+      "control_id": "CC5.1",
+      "category": "Security",
+      "tsc": "CC",
+      "title": "Control Selection and Development",
+      "description": "The entity selects and develops control activities that contribute to the mitigation of risks.",
+      "required_evidence": ["control_inventory", "risk_treatment_plan"],
+      "data_sources": ["confluence", "manual_upload"],
+      "thresholds": {}
+    },
+    {
+      "control_id": "CC5.2",
+      "category": "Security",
+      "tsc": "CC",
+      "title": "Technology General Controls",
+      "description": "The entity selects and develops general control activities over technology to support the achievement of objectives.",
+      "required_evidence": ["patch_management_policy", "vulnerability_management_policy", "config_management_policy"],
+      "data_sources": ["aws", "gcp", "azure", "github", "confluence", "manual_upload"],
+      "thresholds": {}
+    },
+    {
+      "control_id": "CC5.3",
+      "category": "Security",
+      "tsc": "CC",
+      "title": "Policy Deployment",
+      "description": "The entity deploys control activities through policies and procedures.",
+      "required_evidence": ["security_policy_coverage", "policy_review_date"],
+      "data_sources": ["confluence", "manual_upload"],
+      "thresholds": {}
+    },
+    {
+      "control_id": "CC6.1",
+      "category": "Security",
+      "tsc": "CC",
+      "title": "Logical Access Security — Registration and Authorization",
+      "description": "The entity implements logical access security software, infrastructure, and architectures over protected information assets.",
+      "required_evidence": ["mfa_enrollment_rate", "inactive_user_report", "access_review_log"],
+      "data_sources": ["okta", "google_workspace", "azure", "manual_upload"],
+      "thresholds": {
+        "mfa_enrollment_rate": {"compliant": 95, "partial": 80},
+        "inactive_user_days_threshold": {"compliant": 30, "partial": 60}
+      }
+    },
+    {
+      "control_id": "CC6.2",
+      "category": "Security",
+      "tsc": "CC",
+      "title": "Prior to Issuing System Credentials",
+      "description": "Prior to issuing system credentials and granting system access, the entity registers and authorizes new internal and external users.",
+      "required_evidence": ["user_provisioning_process", "access_request_records"],
+      "data_sources": ["okta", "google_workspace", "manual_upload"],
+      "thresholds": {}
+    },
+    {
+      "control_id": "CC6.3",
+      "category": "Security",
+      "tsc": "CC",
+      "title": "Role-Based Access and Least Privilege",
+      "description": "The entity authorizes, modifies, or removes access to data, software, functions, and other protected information assets based on roles.",
+      "required_evidence": ["rbac_policy", "privileged_user_count", "access_review_completion"],
+      "data_sources": ["okta", "google_workspace", "aws", "gcp", "azure", "manual_upload"],
+      "thresholds": {
+        "access_review_completion": {"compliant": 100, "partial": 85}
+      }
+    },
+    {
+      "control_id": "CC6.4",
+      "category": "Security",
+      "tsc": "CC",
+      "title": "Restriction of Physical Access",
+      "description": "The entity restricts physical access to facilities and protected information assets.",
+      "required_evidence": ["physical_access_policy", "badge_access_logs", "visitor_log"],
+      "data_sources": ["manual_upload"],
+      "thresholds": {}
+    },
+    {
+      "control_id": "CC6.5",
+      "category": "Security",
+      "tsc": "CC",
+      "title": "Logical Access — Termination and Transfers",
+      "description": "The entity discontinues logical access for terminated personnel and transfers access as required.",
+      "required_evidence": ["offboarding_process", "termination_access_revocation_sla"],
+      "data_sources": ["okta", "google_workspace", "manual_upload"],
+      "thresholds": {
+        "termination_access_revocation_sla": {"compliant": 1, "partial": 3}
+      }
+    },
+    {
+      "control_id": "CC6.6",
+      "category": "Security",
+      "tsc": "CC",
+      "title": "Security Measures — Network and Transmission",
+      "description": "The entity implements controls to prevent or detect and act upon the introduction of unauthorized or malicious software.",
+      "required_evidence": ["network_security_policy", "encryption_in_transit", "vpn_coverage"],
+      "data_sources": ["aws", "gcp", "azure", "manual_upload"],
+      "thresholds": {}
+    },
+    {
+      "control_id": "CC6.7",
+      "category": "Security",
+      "tsc": "CC",
+      "title": "Restriction of Unauthorized Software",
+      "description": "The entity restricts the transmission, movement, and removal of information to authorized internal and external users.",
+      "required_evidence": ["endpoint_protection_coverage", "dlp_policy", "removable_media_policy"],
+      "data_sources": ["jamf", "intune", "kandji", "google_workspace", "manual_upload"],
+      "thresholds": {
+        "endpoint_protection_coverage": {"compliant": 95, "partial": 85}
+      }
+    },
+    {
+      "control_id": "CC6.8",
+      "category": "Security",
+      "tsc": "CC",
+      "title": "Malware and Unauthorized Software Prevention",
+      "description": "The entity implements controls to prevent or detect unauthorized software.",
+      "required_evidence": ["antivirus_coverage", "edr_deployment", "malware_scan_frequency"],
+      "data_sources": ["jamf", "intune", "kandji", "manual_upload"],
+      "thresholds": {
+        "antivirus_coverage": {"compliant": 98, "partial": 90}
+      }
+    },
+    {
+      "control_id": "CC7.1",
+      "category": "Security",
+      "tsc": "CC",
+      "title": "System Configuration Baselines",
+      "description": "To meet its objectives, the entity uses detection and monitoring procedures to identify changes to configurations.",
+      "required_evidence": ["config_baseline_docs", "drift_detection_enabled", "cis_benchmark_compliance"],
+      "data_sources": ["aws", "gcp", "azure", "jamf", "intune", "kandji", "manual_upload"],
+      "thresholds": {}
+    },
+    {
+      "control_id": "CC7.2",
+      "category": "Security",
+      "tsc": "CC",
+      "title": "Monitoring for Anomalous Activity",
+      "description": "The entity monitors system components for anomalous behavior that is indicative of malicious acts.",
+      "required_evidence": ["siem_enabled", "alerting_policy", "log_retention_days"],
+      "data_sources": ["aws", "gcp", "azure", "manual_upload"],
+      "thresholds": {
+        "log_retention_days": {"compliant": 365, "partial": 90}
+      }
+    },
+    {
+      "control_id": "CC7.3",
+      "category": "Security",
+      "tsc": "CC",
+      "title": "Event Evaluation and Response",
+      "description": "The entity evaluates security events to determine whether they could or have resulted in a failure of the entity to meet its objectives.",
+      "required_evidence": ["incident_response_plan", "security_event_log_review"],
+      "data_sources": ["aws", "gcp", "azure", "confluence", "manual_upload"],
+      "thresholds": {}
+    },
+    {
+      "control_id": "CC7.4",
+      "category": "Security",
+      "tsc": "CC",
+      "title": "Incident Response",
+      "description": "The entity responds to identified security incidents by executing defined incident response procedures.",
+      "required_evidence": ["incident_response_plan", "incident_log", "post_incident_reviews"],
+      "data_sources": ["jira", "confluence", "manual_upload"],
+      "thresholds": {}
+    },
+    {
+      "control_id": "CC7.5",
+      "category": "Security",
+      "tsc": "CC",
+      "title": "Incident Recovery",
+      "description": "The entity identifies, develops, and implements activities to recover from identified security incidents.",
+      "required_evidence": ["recovery_procedures", "lessons_learned_records"],
+      "data_sources": ["confluence", "manual_upload"],
+      "thresholds": {}
+    },
+    {
+      "control_id": "CC8.1",
+      "category": "Security",
+      "tsc": "CC",
+      "title": "Change Management Process",
+      "description": "The entity authorizes, designs, develops or acquires, configures, documents, tests, approves, and implements changes to infrastructure.",
+      "required_evidence": ["change_management_policy", "branch_protection_enabled", "pr_review_required", "change_request_records"],
+      "data_sources": ["github", "jira", "confluence", "manual_upload"],
+      "thresholds": {
+        "branch_protection_enabled": {"compliant": 100, "partial": 80},
+        "pr_review_required": {"compliant": 100, "partial": 80}
+      }
+    },
+    {
+      "control_id": "CC9.1",
+      "category": "Security",
+      "tsc": "CC",
+      "title": "Risk Mitigation — Vendor and Business Partner Management",
+      "description": "The entity identifies, selects, and develops risk mitigation activities for risks arising from potential business disruptions.",
+      "required_evidence": ["vendor_management_policy", "vendor_security_assessment", "business_continuity_plan"],
+      "data_sources": ["confluence", "manual_upload"],
+      "thresholds": {}
+    },
+    {
+      "control_id": "CC9.2",
+      "category": "Security",
+      "tsc": "CC",
+      "title": "Vendor and Business Partner Risk Management",
+      "description": "The entity assesses and manages risks associated with vendors and business partners.",
+      "required_evidence": ["vendor_risk_register", "third_party_audits_or_certifications"],
+      "data_sources": ["confluence", "manual_upload"],
+      "thresholds": {}
+    },
+    {
+      "control_id": "A1.1",
+      "category": "Availability",
+      "tsc": "A",
+      "title": "Availability Policies and Procedures",
+      "description": "The entity maintains, monitors, and evaluates current processing capacity and use of system components to manage capacity demand.",
+      "required_evidence": ["availability_sla", "capacity_management_policy", "uptime_monitoring_enabled"],
+      "data_sources": ["aws", "gcp", "azure", "manual_upload"],
+      "thresholds": {
+        "uptime_sla_percent": {"compliant": 99.9, "partial": 99.5}
+      }
+    },
+    {
+      "control_id": "A1.2",
+      "category": "Availability",
+      "tsc": "A",
+      "title": "Environmental Protections",
+      "description": "The entity authorizes, designs, develops or acquires, implements, operates, approves, maintains, and monitors environmental protections.",
+      "required_evidence": ["backup_policy", "disaster_recovery_plan", "rto_rpo_defined"],
+      "data_sources": ["aws", "gcp", "azure", "manual_upload"],
+      "thresholds": {}
+    },
+    {
+      "control_id": "A1.3",
+      "category": "Availability",
+      "tsc": "A",
+      "title": "Backup and Recovery",
+      "description": "The entity tests recovery plan procedures to support the availability of information.",
+      "required_evidence": ["backup_test_records", "dr_test_records", "recovery_time_actual"],
+      "data_sources": ["aws", "gcp", "azure", "manual_upload"],
+      "thresholds": {}
+    },
+    {
+      "control_id": "PI1.1",
+      "category": "Processing Integrity",
+      "tsc": "PI",
+      "title": "Processing Integrity Policies",
+      "description": "The entity obtains or generates, uses, and communicates relevant, quality information to support the functioning of internal control.",
+      "required_evidence": ["data_processing_policy", "input_validation_controls", "error_handling_procedures"],
+      "data_sources": ["confluence", "manual_upload"],
+      "thresholds": {}
+    },
+    {
+      "control_id": "PI1.2",
+      "category": "Processing Integrity",
+      "tsc": "PI",
+      "title": "System Inputs",
+      "description": "The entity implements controls over system inputs, including controls over completeness and accuracy.",
+      "required_evidence": ["input_validation_records", "data_quality_checks"],
+      "data_sources": ["manual_upload"],
+      "thresholds": {}
+    },
+    {
+      "control_id": "PI1.3",
+      "category": "Processing Integrity",
+      "tsc": "PI",
+      "title": "System Processing",
+      "description": "The entity implements controls over system processing to result in complete, accurate, timely, and authorized processing.",
+      "required_evidence": ["processing_controls_documentation", "reconciliation_records", "error_rate_monitoring"],
+      "data_sources": ["manual_upload"],
+      "thresholds": {}
+    },
+    {
+      "control_id": "PI1.4",
+      "category": "Processing Integrity",
+      "tsc": "PI",
+      "title": "System Output",
+      "description": "The entity implements controls over system output activities.",
+      "required_evidence": ["output_validation_procedures", "report_reconciliation_records"],
+      "data_sources": ["manual_upload"],
+      "thresholds": {}
+    },
+    {
+      "control_id": "PI1.5",
+      "category": "Processing Integrity",
+      "tsc": "PI",
+      "title": "Stored Data Integrity",
+      "description": "The entity implements controls over the storage of information to meet its objectives related to processing integrity.",
+      "required_evidence": ["data_integrity_controls", "checksum_validation", "storage_encryption"],
+      "data_sources": ["aws", "gcp", "azure", "manual_upload"],
+      "thresholds": {}
+    },
+    {
+      "control_id": "C1.1",
+      "category": "Confidentiality",
+      "tsc": "C",
+      "title": "Confidentiality Policies",
+      "description": "The entity identifies and maintains confidential information to meet the entity's objectives related to confidentiality.",
+      "required_evidence": ["data_classification_policy", "confidentiality_agreement_coverage", "nda_process"],
+      "data_sources": ["google_workspace", "confluence", "manual_upload"],
+      "thresholds": {
+        "confidentiality_agreement_coverage": {"compliant": 100, "partial": 95}
+      }
+    },
+    {
+      "control_id": "C1.2",
+      "category": "Confidentiality",
+      "tsc": "C",
+      "title": "Confidential Information Disposal",
+      "description": "The entity disposes of confidential information to meet the entity's objectives related to confidentiality.",
+      "required_evidence": ["data_retention_policy", "secure_disposal_procedures", "data_destruction_records"],
+      "data_sources": ["confluence", "manual_upload"],
+      "thresholds": {}
+    },
+    {
+      "control_id": "C1.3",
+      "category": "Confidentiality",
+      "tsc": "C",
+      "title": "Confidential Data Encryption",
+      "description": "The entity encrypts confidential data at rest and in transit.",
+      "required_evidence": ["encryption_at_rest_enabled", "tls_enforcement", "key_management_policy"],
+      "data_sources": ["aws", "gcp", "azure", "google_workspace", "manual_upload"],
+      "thresholds": {
+        "encryption_at_rest_enabled": {"compliant": 100, "partial": 95},
+        "tls_enforcement": {"compliant": 100, "partial": 95}
+      }
+    },
+    {
+      "control_id": "C1.4",
+      "category": "Confidentiality",
+      "tsc": "C",
+      "title": "Confidentiality Breach Response",
+      "description": "The entity responds to breaches of confidentiality.",
+      "required_evidence": ["breach_notification_policy", "confidentiality_incident_log"],
+      "data_sources": ["confluence", "jira", "manual_upload"],
+      "thresholds": {}
+    },
+    {
+      "control_id": "P1.1",
+      "category": "Privacy",
+      "tsc": "P",
+      "title": "Privacy Notice",
+      "description": "The entity provides notice to data subjects about its privacy practices.",
+      "required_evidence": ["privacy_policy_url", "privacy_notice_last_updated"],
+      "data_sources": ["confluence", "manual_upload"],
+      "thresholds": {}
+    },
+    {
+      "control_id": "P2.1",
+      "category": "Privacy",
+      "tsc": "P",
+      "title": "Choice and Consent",
+      "description": "The entity communicates choices available regarding the collection, use, retention, disclosure, and disposal of personal information.",
+      "required_evidence": ["consent_management_process", "opt_out_mechanism"],
+      "data_sources": ["confluence", "manual_upload"],
+      "thresholds": {}
+    },
+    {
+      "control_id": "P3.1",
+      "category": "Privacy",
+      "tsc": "P",
+      "title": "Collection of Personal Information",
+      "description": "Personal information is collected consistent with the entity's objectives related to privacy.",
+      "required_evidence": ["data_collection_policy", "personal_data_inventory"],
+      "data_sources": ["confluence", "manual_upload"],
+      "thresholds": {}
+    },
+    {
+      "control_id": "P3.2",
+      "category": "Privacy",
+      "tsc": "P",
+      "title": "Explicit Consent for Sensitive Data",
+      "description": "The entity obtains explicit consent for the collection of sensitive personal information.",
+      "required_evidence": ["sensitive_data_consent_process", "sensitive_data_categories_defined"],
+      "data_sources": ["confluence", "manual_upload"],
+      "thresholds": {}
+    },
+    {
+      "control_id": "P4.1",
+      "category": "Privacy",
+      "tsc": "P",
+      "title": "Use of Personal Information",
+      "description": "The entity limits the use of personal information to the purposes identified in the privacy notice.",
+      "required_evidence": ["data_use_policy", "purpose_limitation_controls"],
+      "data_sources": ["confluence", "manual_upload"],
+      "thresholds": {}
+    },
+    {
+      "control_id": "P4.2",
+      "category": "Privacy",
+      "tsc": "P",
+      "title": "Retention of Personal Information",
+      "description": "The entity retains personal information for no longer than necessary.",
+      "required_evidence": ["data_retention_schedule", "automated_deletion_records"],
+      "data_sources": ["confluence", "manual_upload"],
+      "thresholds": {}
+    },
+    {
+      "control_id": "P4.3",
+      "category": "Privacy",
+      "tsc": "P",
+      "title": "Disposal of Personal Information",
+      "description": "The entity disposes of personal information in accordance with retention policies.",
+      "required_evidence": ["secure_disposal_procedures", "disposal_audit_log"],
+      "data_sources": ["confluence", "manual_upload"],
+      "thresholds": {}
+    },
+    {
+      "control_id": "P5.1",
+      "category": "Privacy",
+      "tsc": "P",
+      "title": "Access to Personal Information",
+      "description": "The entity grants data subjects access to their personal information when requested.",
+      "required_evidence": ["dsr_process", "dsr_response_sla"],
+      "data_sources": ["confluence", "manual_upload"],
+      "thresholds": {
+        "dsr_response_sla_days": {"compliant": 30, "partial": 45}
+      }
+    },
+    {
+      "control_id": "P5.2",
+      "category": "Privacy",
+      "tsc": "P",
+      "title": "Correction of Personal Information",
+      "description": "The entity corrects, amends, or appends personal information based on documented requests.",
+      "required_evidence": ["data_correction_process", "correction_request_log"],
+      "data_sources": ["confluence", "manual_upload"],
+      "thresholds": {}
+    },
+    {
+      "control_id": "P6.1",
+      "category": "Privacy",
+      "tsc": "P",
+      "title": "Disclosure to Third Parties",
+      "description": "Personal information is disclosed to third parties with prior consent of the data subject.",
+      "required_evidence": ["third_party_sharing_policy", "dpa_agreements", "sub_processor_list"],
+      "data_sources": ["confluence", "manual_upload"],
+      "thresholds": {}
+    },
+    {
+      "control_id": "P6.2",
+      "category": "Privacy",
+      "tsc": "P",
+      "title": "Third-Party Privacy Commitments",
+      "description": "The entity assesses privacy commitments of third parties.",
+      "required_evidence": ["vendor_privacy_assessments", "data_processing_agreements"],
+      "data_sources": ["confluence", "manual_upload"],
+      "thresholds": {}
+    },
+    {
+      "control_id": "P6.3",
+      "category": "Privacy",
+      "tsc": "P",
+      "title": "Notification of Breaches",
+      "description": "The entity provides notification of privacy breaches to affected data subjects, regulators, or others.",
+      "required_evidence": ["breach_notification_policy", "breach_notification_sla"],
+      "data_sources": ["confluence", "manual_upload"],
+      "thresholds": {
+        "breach_notification_sla_hours": {"compliant": 72, "partial": 120}
+      }
+    },
+    {
+      "control_id": "P7.1",
+      "category": "Privacy",
+      "tsc": "P",
+      "title": "Quality of Personal Information",
+      "description": "The entity collects and maintains accurate, up-to-date, complete, and relevant personal information.",
+      "required_evidence": ["data_quality_policy", "data_accuracy_controls"],
+      "data_sources": ["confluence", "manual_upload"],
+      "thresholds": {}
+    },
+    {
+      "control_id": "P8.1",
+      "category": "Privacy",
+      "tsc": "P",
+      "title": "Privacy Compliance Monitoring",
+      "description": "The entity monitors compliance with its privacy policies and procedures.",
+      "required_evidence": ["privacy_audit_records", "privacy_training_completion", "dpo_role_defined"],
+      "data_sources": ["confluence", "manual_upload"],
+      "thresholds": {
+        "privacy_training_completion": {"compliant": 100, "partial": 85}
+      }
+    }
+  ],
+  "metadata": {
+    "version": "1.0",
+    "source": "AICPA Trust Services Criteria 2017 (updated 2022)",
+    "total_controls": 59,
+    "categories": {
+      "CC": "Security (Common Criteria)",
+      "A": "Availability",
+      "PI": "Processing Integrity",
+      "C": "Confidentiality",
+      "P": "Privacy"
+    }
+  }
+}
