@@ -12,6 +12,7 @@ if not st.session_state.get("setup_complete"):
 
 from engine import control_mapper, scorer
 from db import supabase_client
+from rate_limiter import get_client_ip, check_limit, record_run
 
 st.set_page_config(page_title="Gap Assessment · SOC2", page_icon="🔍", layout="wide")
 st.title("🔍 Gap Assessment")
@@ -32,10 +33,24 @@ controls = _load_controls()
 controls_in_scope = [c for c in controls if c["tsc"] in tsc_scope]
 
 
+# ── Rate limiting ─────────────────────────────────────────────────────────────
+client_ip = get_client_ip(dict(st.context.headers))
+allowed, remaining = check_limit(client_ip)
+
 # ── Run assessment ────────────────────────────────────────────────────────────
-col_run, col_save, _ = st.columns([1, 1, 4])
+col_run, col_info, col_save = st.columns([1, 2, 1])
 with col_run:
-    run_btn = st.button("▶ Run Assessment", type="primary", use_container_width=True)
+    run_btn = st.button(
+        "▶ Run Assessment",
+        type="primary",
+        use_container_width=True,
+        disabled=not allowed,
+    )
+with col_info:
+    if not allowed:
+        st.error("Daily limit reached (5 assessments/day per IP). Come back tomorrow.")
+    else:
+        st.caption(f"{remaining} assessment{'s' if remaining != 1 else ''} remaining today")
 with col_save:
     save_btn = st.button("💾 Save Snapshot", use_container_width=True, help="Save results to Supabase")
 
@@ -101,6 +116,8 @@ if run_btn or (demo and "assessment_results" not in st.session_state):
             st.session_state.scores             = {cid: r["status"] for cid, r in results.items()}
             st.session_state.last_assessment    = date.today().isoformat()
 
+        if run_btn:
+            record_run(client_ip)
         st.success(f"Assessment complete — {len(results)} controls evaluated.")
 
 if save_btn and "assessment_results" in st.session_state:
