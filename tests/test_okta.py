@@ -147,5 +147,130 @@ class HostTests(unittest.TestCase):
         self.assertFalse(ok)
 
 
+def _factor(factor_type, status="ACTIVE"):
+    return {"factorType": factor_type, "status": status}
+
+
+class FactorClassificationTests(unittest.TestCase):
+    def test_weak_factors_alone_are_not_mfa(self):
+        for weak in ("sms", "call", "email", "question"):
+            self.assertEqual(okta.classify_factors([_factor(weak)]), "weak_only", weak)
+        self.assertEqual(okta.classify_factors([_factor("sms"), _factor("question"), _factor("email")]), "weak_only")
+
+    def test_no_active_factor_is_none(self):
+        self.assertEqual(okta.classify_factors([]), "none")
+        self.assertEqual(okta.classify_factors(None), "none")
+        self.assertEqual(okta.classify_factors([_factor("push", status="PENDING_ACTIVATION")]), "none")
+        self.assertEqual(okta.classify_factors([_factor("webauthn", status="INACTIVE"), {"status": "ACTIVE"}, "junk"]), "none")
+
+    def test_possession_factors_are_strong(self):
+        for strong in ("push", "token:software:totp", "token:hardware", "token", "web"):
+            self.assertEqual(okta.classify_factors([_factor(strong)]), "strong", strong)
+        self.assertEqual(okta.classify_factors([_factor("sms"), _factor("push")]), "strong")
+
+    def test_origin_bound_factors_are_phishing_resistant(self):
+        for best in ("webauthn", "u2f", "signed_nonce"):
+            self.assertEqual(okta.classify_factors([_factor(best)]), "phishing_resistant", best)
+        self.assertEqual(okta.classify_factors([_factor("sms"), _factor("push"), _factor("webauthn")]), "phishing_resistant")
+
+
+def _user(uid):
+    return {"id": uid, "profile": {"login": f"{uid}@example.org"}}
+
+
+def _org(factors_by_user, admins=()):
+    """Routes for an org whose users have the given factor lists (or an HTTP status)."""
+    def factors(url):
+        uid = url.split("/users/")[1].split("/")[0]
+        value = factors_by_user[uid]
+        return _Response(status=value) if isinstance(value, int) else _Response(value)
+
+    def roles(url):
+        uid = url.split("/users/")[1].split("/")[0]
+        return _Response([{"type": "SUPER_ADMIN"}] if uid in admins else [])
+
+    return [
+        ("lastLogin", _Response([])),
+        ("/factors", factors),
+        ("/roles", roles),
+        ("/users?", _Response([_user(uid) for uid in factors_by_user])),
+        ("/policies", _Response([])),
+        ("/apps", _Response([])),
+    ]
+
+
+class MfaMetricTests(unittest.TestCase):
+    def test_only_real_second_factors_count_as_enrolled(self):
+        findings, _ = _collect(_org({
+            "key": [_factor("webauthn")],
+            "push": [_factor("push"), _factor("sms")],
+            "sms": [_factor("sms")],
+            "question": [_factor("question"), _factor("email")],
+            "pending": [_factor("push", status="PENDING_ACTIVATION")],
+            "nothing": [],
+            "failed": 500,
+            "denied": 403,
+        }))
+        self.assertNotIn("_error", findings)
+        self.assertEqual(findings["total_active_users"], 8)
+        self.assertEqual(findings["mfa_enrolled_count"], 2)
+        self.assertEqual(findings["mfa_enrollment_rate"], 25.0)
+        self.assertEqual(findings["mfa_phishing_resistant_count"], 1)
+        self.assertEqual(findings["mfa_weak_only_count"], 2)
+        self.assertEqual(findings["mfa_none_count"], 2)
+        self.assertEqual(findings["mfa_unknown_count"], 2)
+
+    def test_admin_factor_strength_is_reported_by_name(self):
+        findings, _ = _collect(_org(
+            {
+                "root": [_factor("webauthn")],
+                "ops": [_factor("push")],
+                "legacy": [_factor("sms")],
+                "broken": 500,
+                "staff": [],
+            },
+            admins=("root", "ops", "legacy", "broken"),
+        ))
+        self.assertEqual(findings["admin_count"], 4)
+        self.assertEqual(findings["admins_without_mfa"], ["legacy@example.org", "broken@example.org"])
+        self.assertEqual(
+            findings["admins_without_phishing_resistant_mfa"],
+            ["ops@example.org", "legacy@example.org", "broken@example.org"],
+        )
+
+    def test_one_factor_lookup_per_user(self):
+        _, fake = _collect(_org({"a": [], "b": [], "c": []}, admins=("a",)))
+        self.assertEqual(sum(1 for url, _ in fake.calls if url.endswith("/factors")), 3)
+
+
+class ScoringTests(unittest.TestCase):
+    def _score(self, findings):
+        from engine import control_mapper, scorer
+
+        evidence = control_mapper.map_okta(findings)["CC6.1"]
+        with mock.patch.object(scorer, "_load_controls", return_value=[{"control_id": "CC6.1", "tsc": "CC"}]):
+            return scorer.score_all({"CC6.1": evidence}, ["CC"], {})["CC6.1"]
+
+    def test_an_admin_without_mfa_fails_the_control_despite_a_high_rate(self):
+        result = self._score({
+            "mfa_enrollment_rate": 99.0,
+            "admins_without_mfa": ["legacy@example.org"],
+            "admins_without_phishing_resistant_mfa": ["legacy@example.org"],
+        })
+        self.assertNotEqual(result["status"], "compliant")
+        self.assertTrue(any("without MFA" in gap and "legacy@example.org" in gap for gap in result["gaps"]))
+
+    def test_weak_only_users_and_unknowns_are_called_out(self):
+        result = self._score({"mfa_enrollment_rate": 96.0, "mfa_weak_only_count": 3, "mfa_unknown_count": 2,
+                              "admins_without_mfa": [], "admins_without_phishing_resistant_mfa": []})
+        self.assertEqual(result["status"], "compliant")
+        self.assertTrue(any("SMS" in gap for gap in result["gaps"]))
+        self.assertTrue(any("could not be read" in gap for gap in result["gaps"]))
+
+    def test_demo_data_still_scores_compliant(self):
+        result = self._score(okta._demo_data())
+        self.assertEqual(result["status"], "compliant")
+
+
 if __name__ == "__main__":
     unittest.main()

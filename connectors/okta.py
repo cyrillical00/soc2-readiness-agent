@@ -37,6 +37,34 @@ def normalize_okta_domain(domain: str) -> str:
     return host
 
 
+# Factor types that are not counted as multi-factor authentication. A security
+# question is a second thing the user knows, email is only as strong as the
+# mailbox, and SMS and voice codes can be intercepted or redirected.
+WEAK_FACTOR_TYPES = {"sms", "call", "email", "question"}
+# Factors bound to the site they sign in to, which a phishing page cannot relay.
+PHISHING_RESISTANT_FACTOR_TYPES = {"webauthn", "u2f", "signed_nonce"}
+
+
+def classify_factors(factors) -> str:
+    """Strength of one user's enrolled factors.
+
+    Returns "phishing_resistant", "strong" (an authenticator app, push or
+    hardware token), "weak_only" or "none". Only ACTIVE factors count.
+    """
+    active = {
+        f.get("factorType")
+        for f in factors or []
+        if isinstance(f, dict) and f.get("status") == "ACTIVE" and f.get("factorType")
+    }
+    if active & PHISHING_RESISTANT_FACTOR_TYPES:
+        return "phishing_resistant"
+    if active - WEAK_FACTOR_TYPES:
+        return "strong"
+    if active:
+        return "weak_only"
+    return "none"
+
+
 def _get_creds():
     domain = secret("OKTA_DOMAIN")
     token  = secret("OKTA_API_TOKEN")
@@ -114,12 +142,16 @@ def collect(demo: bool = False) -> dict:
         findings["total_active_users"] = total_users
 
         # --- MFA enrollment ---
-        mfa_enrolled = 0
+        # A user counts as enrolled only with an active factor that is not in
+        # WEAK_FACTOR_TYPES. A failed lookup is reported as unknown and is not
+        # counted as enrolled.
+        mfa_strength = {}
         for u in users:
             uid = u["id"]
             factors_r = _get(f"{base}/users/{uid}/factors", domain, headers)
-            if factors_r.ok and factors_r.json():
-                mfa_enrolled += 1
+            mfa_strength[uid] = classify_factors(factors_r.json()) if factors_r.status_code == 200 else "unknown"
+        strengths = list(mfa_strength.values())
+        mfa_enrolled = sum(1 for kind in strengths if kind in ("strong", "phishing_resistant"))
         findings["mfa_enrolled_count"] = mfa_enrolled
         findings["mfa_enrollment_rate"] = round(mfa_enrolled / total_users * 100, 1) if total_users else 0
 
@@ -154,6 +186,22 @@ def collect(demo: bool = False) -> dict:
         apps_r = _get(f"{base}/apps?filter=status+eq+%22ACTIVE%22&limit=200", domain, headers, timeout=15)
         findings["active_app_count"] = len(apps_r.json()) if apps_r.ok else 0
 
+        # --- MFA breakdown ---
+        findings["mfa_phishing_resistant_count"] = strengths.count("phishing_resistant")
+        findings["mfa_weak_only_count"] = strengths.count("weak_only")
+        findings["mfa_none_count"] = strengths.count("none")
+        findings["mfa_unknown_count"] = strengths.count("unknown")
+        # Admin accounts are held to the same factor rules, and listed by name
+        # when they fall short.
+        findings["admins_without_mfa"] = [
+            a["login"] for a in admins
+            if mfa_strength.get(a["id"]) not in ("strong", "phishing_resistant")
+        ]
+        findings["admins_without_phishing_resistant_mfa"] = [
+            a["login"] for a in admins
+            if mfa_strength.get(a["id"]) != "phishing_resistant"
+        ]
+
         findings["_source"] = "okta_api"
         findings["_collected_at"] = datetime.utcnow().isoformat()
 
@@ -174,6 +222,12 @@ def _demo_data() -> dict:
         "admin_logins": ["alice@acme.com", "bob@acme.com", "carol@acme.com", "dave@acme.com", "eve@acme.com"],
         "password_policies_count": 2,
         "active_app_count": 38,
+        "mfa_phishing_resistant_count": 61,
+        "mfa_weak_only_count": 3,
+        "mfa_none_count": 1,
+        "mfa_unknown_count": 0,
+        "admins_without_mfa": [],
+        "admins_without_phishing_resistant_mfa": ["dave@acme.com", "eve@acme.com"],
         "_source": "demo",
         "_collected_at": datetime.utcnow().isoformat(),
     }
