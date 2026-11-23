@@ -6,12 +6,14 @@ Covers: CC6 (Logical Access), CC5 (Risk Mitigation)
 import os
 import requests
 import streamlit as st
+
+from auth import secret
 from datetime import datetime, timedelta, timezone
 
 
 def _get_creds():
-    domain = st.secrets.get("OKTA_DOMAIN", os.getenv("OKTA_DOMAIN", ""))
-    token  = st.secrets.get("OKTA_API_TOKEN", os.getenv("OKTA_API_TOKEN", ""))
+    domain = secret("OKTA_DOMAIN")
+    token  = secret("OKTA_API_TOKEN")
     return domain.rstrip("/"), token
 
 

@@ -8,12 +8,14 @@ from datetime import datetime
 
 import streamlit as st
 
+from auth import secret
+
 
 def _get_creds():
     return {
-        "tenant_id":     st.secrets.get("AZURE_TENANT_ID",     os.getenv("AZURE_TENANT_ID",     "")),
-        "client_id":     st.secrets.get("AZURE_CLIENT_ID",     os.getenv("AZURE_CLIENT_ID",     "")),
-        "client_secret": st.secrets.get("AZURE_CLIENT_SECRET", os.getenv("AZURE_CLIENT_SECRET", "")),
+        "tenant_id":     secret("AZURE_TENANT_ID"),
+        "client_id":     secret("AZURE_CLIENT_ID"),
+        "client_secret": secret("AZURE_CLIENT_SECRET"),
     }
 
 

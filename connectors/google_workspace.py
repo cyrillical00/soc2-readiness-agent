@@ -10,9 +10,11 @@ from datetime import datetime
 
 import streamlit as st
 
+from auth import secret
+
 
 def _get_credentials():
-    raw = st.secrets.get("GOOGLE_SERVICE_ACCOUNT_JSON", os.getenv("GOOGLE_SERVICE_ACCOUNT_JSON", ""))
+    raw = secret("GOOGLE_SERVICE_ACCOUNT_JSON")
     if not raw:
         return None
     try:

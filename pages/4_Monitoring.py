@@ -1,9 +1,14 @@
 import streamlit as st
+
+import auth
 import plotly.graph_objects as go
 
 if not st.session_state.get("setup_complete"):
     st.warning("Complete session setup on the Home page first.")
     st.stop()
+
+# Live data needs a signed-in user; anyone else is limited to Demo Mode.
+auth.require_access()
 
 from engine import monitor, control_mapper, scorer
 from db import supabase_client

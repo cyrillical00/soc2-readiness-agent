@@ -8,10 +8,12 @@ from datetime import datetime
 
 import streamlit as st
 
+from auth import secret
+
 
 def _get_creds():
-    token = st.secrets.get("GITHUB_TOKEN", os.getenv("GITHUB_TOKEN", ""))
-    org   = st.secrets.get("GITHUB_ORG",   os.getenv("GITHUB_ORG", ""))
+    token = secret("GITHUB_TOKEN")
+    org   = secret("GITHUB_ORG")
     return token, org
 
 

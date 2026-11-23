@@ -5,6 +5,8 @@ policy_generator.py — Claude API integration for policy doc drafts and control
 import os
 import streamlit as st
 
+from auth import secret
+
 try:
     import anthropic
     _ANTHROPIC_AVAILABLE = True
@@ -89,7 +91,7 @@ POLICY_TEMPLATES = {
 def _get_client():
     if not _ANTHROPIC_AVAILABLE:
         return None
-    api_key = st.secrets.get("ANTHROPIC_API_KEY", os.getenv("ANTHROPIC_API_KEY", ""))
+    api_key = secret("ANTHROPIC_API_KEY")
     if not api_key:
         return None
     return anthropic.Anthropic(api_key=api_key)

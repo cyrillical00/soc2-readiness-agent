@@ -8,12 +8,14 @@ from datetime import datetime
 
 import streamlit as st
 
+from auth import secret
+
 
 def _get_creds():
     return {
-        "base_url":  st.secrets.get("JIRA_BASE_URL",  os.getenv("JIRA_BASE_URL",  "")),
-        "email":     st.secrets.get("JIRA_EMAIL",      os.getenv("JIRA_EMAIL",      "")),
-        "api_token": st.secrets.get("JIRA_API_TOKEN",  os.getenv("JIRA_API_TOKEN",  "")),
+        "base_url":  secret("JIRA_BASE_URL"),
+        "email":     secret("JIRA_EMAIL"),
+        "api_token": secret("JIRA_API_TOKEN"),
     }
 
 

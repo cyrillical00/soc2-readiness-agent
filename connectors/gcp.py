@@ -10,9 +10,11 @@ from datetime import datetime
 
 import streamlit as st
 
+from auth import secret
+
 
 def _get_creds():
-    raw = st.secrets.get("GCP_SERVICE_ACCOUNT_JSON", os.getenv("GCP_SERVICE_ACCOUNT_JSON", ""))
+    raw = secret("GCP_SERVICE_ACCOUNT_JSON")
     if not raw:
         return None
     try:

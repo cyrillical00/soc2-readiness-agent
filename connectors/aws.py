@@ -8,12 +8,14 @@ from datetime import datetime
 
 import streamlit as st
 
+from auth import secret
+
 
 def _get_creds():
     return {
-        "aws_access_key_id":     st.secrets.get("AWS_ACCESS_KEY_ID",     os.getenv("AWS_ACCESS_KEY_ID",     "")),
-        "aws_secret_access_key": st.secrets.get("AWS_SECRET_ACCESS_KEY", os.getenv("AWS_SECRET_ACCESS_KEY", "")),
-        "region_name":           st.secrets.get("AWS_REGION",            os.getenv("AWS_REGION",            "us-east-1")),
+        "aws_access_key_id":     secret("AWS_ACCESS_KEY_ID"),
+        "aws_secret_access_key": secret("AWS_SECRET_ACCESS_KEY"),
+        "region_name":           secret("AWS_REGION", "us-east-1"),
     }
 
 

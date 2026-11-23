@@ -9,12 +9,14 @@ from datetime import datetime
 import requests
 import streamlit as st
 
+from auth import secret
+
 
 def _get_creds():
     return {
-        "base_url":      st.secrets.get("JAMF_BASE_URL",      os.getenv("JAMF_BASE_URL",      "")),
-        "client_id":     st.secrets.get("JAMF_CLIENT_ID",     os.getenv("JAMF_CLIENT_ID",     "")),
-        "client_secret": st.secrets.get("JAMF_CLIENT_SECRET", os.getenv("JAMF_CLIENT_SECRET", "")),
+        "base_url":      secret("JAMF_BASE_URL"),
+        "client_id":     secret("JAMF_CLIENT_ID"),
+        "client_secret": secret("JAMF_CLIENT_SECRET"),
     }
 
 

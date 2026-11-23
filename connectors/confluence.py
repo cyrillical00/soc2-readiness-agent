@@ -9,6 +9,8 @@ from datetime import datetime
 import requests
 import streamlit as st
 
+from auth import secret
+
 # Patterns to match against page titles — order matters (most specific first)
 POLICY_PATTERNS = [
     ("information_security_policy",    ["information security policy", "infosec policy"]),
@@ -31,9 +33,9 @@ POLICY_PATTERNS = [
 
 def _get_creds():
     return {
-        "base_url":  st.secrets.get("CONFLUENCE_BASE_URL",  os.getenv("CONFLUENCE_BASE_URL",  "")),
-        "email":     st.secrets.get("CONFLUENCE_EMAIL",      os.getenv("CONFLUENCE_EMAIL",      "")),
-        "api_token": st.secrets.get("CONFLUENCE_API_TOKEN",  os.getenv("CONFLUENCE_API_TOKEN",  "")),
+        "base_url":  secret("CONFLUENCE_BASE_URL"),
+        "email":     secret("CONFLUENCE_EMAIL"),
+        "api_token": secret("CONFLUENCE_API_TOKEN"),
     }
 
 
