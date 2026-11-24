@@ -13,14 +13,22 @@ from typing import Optional
 
 import streamlit as st
 
+from auth import live_access_allowed, secret
+
 
 def _get_client():
-    """Return an initialised Supabase client, cached on session state."""
+    """Return an initialised Supabase client, cached on session state.
+
+    Stored assessments belong to the operator: a session that is not signed in
+    (Demo Mode) never gets a client, so it can neither read nor write them.
+    """
+    if not live_access_allowed():
+        return None
     if "supabase_client" not in st.session_state:
         try:
             from supabase import create_client
-            url = st.secrets.get("SUPABASE_URL", os.getenv("SUPABASE_URL", ""))
-            key = st.secrets.get("SUPABASE_KEY", os.getenv("SUPABASE_KEY", ""))
+            url = secret("SUPABASE_URL")
+            key = secret("SUPABASE_KEY")
             if not url or not key:
                 st.session_state["supabase_client"] = None
             else:

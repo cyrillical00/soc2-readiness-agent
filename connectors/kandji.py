@@ -9,11 +9,13 @@ from datetime import datetime
 import requests
 import streamlit as st
 
+from auth import secret
+
 
 def _get_creds():
     return {
-        "base_url":  st.secrets.get("KANDJI_BASE_URL",  os.getenv("KANDJI_BASE_URL",  "")),
-        "api_token": st.secrets.get("KANDJI_API_TOKEN", os.getenv("KANDJI_API_TOKEN", "")),
+        "base_url":  secret("KANDJI_BASE_URL"),
+        "api_token": secret("KANDJI_API_TOKEN"),
     }
 
 

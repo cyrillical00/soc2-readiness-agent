@@ -4,9 +4,14 @@ import os
 import pandas as pd
 import streamlit as st
 
+import auth
+
 if not st.session_state.get("setup_complete"):
     st.warning("Complete session setup on the Home page first.")
     st.stop()
+
+# Live data needs a signed-in user; anyone else is limited to Demo Mode.
+auth.require_access()
 
 from engine import evidence_builder
 from utils import pdf_exporter

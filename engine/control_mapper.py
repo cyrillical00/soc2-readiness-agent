@@ -19,6 +19,10 @@ def map_okta(findings: dict) -> dict[str, dict]:
     return {
         "CC6.1": {
             "mfa_enrollment_rate":  findings.get("mfa_enrollment_rate"),
+            "mfa_weak_only_count":  findings.get("mfa_weak_only_count"),
+            "mfa_unknown_count":    findings.get("mfa_unknown_count"),
+            "admins_without_mfa":   findings.get("admins_without_mfa"),
+            "admins_without_phishing_resistant_mfa": findings.get("admins_without_phishing_resistant_mfa"),
             "inactive_user_rate":   findings.get("inactive_user_rate"),
             "inactive_users_90d":   findings.get("inactive_users_90d"),
         },

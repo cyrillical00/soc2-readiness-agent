@@ -9,12 +9,14 @@ from datetime import datetime
 import requests
 import streamlit as st
 
+from auth import secret
+
 
 def _get_creds():
     return {
-        "tenant_id":     st.secrets.get("INTUNE_TENANT_ID",     os.getenv("INTUNE_TENANT_ID",     "")),
-        "client_id":     st.secrets.get("INTUNE_CLIENT_ID",     os.getenv("INTUNE_CLIENT_ID",     "")),
-        "client_secret": st.secrets.get("INTUNE_CLIENT_SECRET", os.getenv("INTUNE_CLIENT_SECRET", "")),
+        "tenant_id":     secret("INTUNE_TENANT_ID"),
+        "client_id":     secret("INTUNE_CLIENT_ID"),
+        "client_secret": secret("INTUNE_CLIENT_SECRET"),
     }
 
 

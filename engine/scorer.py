@@ -121,6 +121,24 @@ def _score_control(control: dict, evidence: dict, overrides: dict) -> dict:
             gaps.append("AWS root account MFA not enabled")
         if rate is not None and float(rate) < 95:
             gaps.append(f"MFA enrollment at {rate}% — target is 95%")
+        weak_only = evidence.get("mfa_weak_only_count")
+        if weak_only:
+            gaps.append(f"{weak_only} user(s) rely on SMS, voice, email or a security question only — not counted as MFA")
+        unknown = evidence.get("mfa_unknown_count")
+        if unknown:
+            gaps.append(f"MFA status could not be read for {unknown} user(s) — counted as not enrolled")
+        # An administrator without a real second factor fails the control
+        # however good the org-wide rate is.
+        admins_no_mfa = evidence.get("admins_without_mfa")
+        if admins_no_mfa:
+            threshold_results.append("non_compliant")
+            gaps.append(f"{len(admins_no_mfa)} admin account(s) without MFA: {', '.join(map(str, admins_no_mfa))}")
+        admins_phishable = evidence.get("admins_without_phishing_resistant_mfa")
+        if admins_phishable:
+            gaps.append(
+                f"{len(admins_phishable)} admin account(s) without a phishing-resistant factor "
+                f"(WebAuthn or Okta FastPass): {', '.join(map(str, admins_phishable))}"
+            )
 
     elif cid == "CC6.3":
         admin = evidence.get("admin_count", 0)

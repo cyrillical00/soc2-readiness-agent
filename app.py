@@ -3,6 +3,8 @@ from datetime import date, timedelta
 import json
 import os
 
+import auth
+
 st.set_page_config(
     page_title="SOC2 Readiness Suite",
     page_icon="🛡️",
@@ -69,6 +71,12 @@ def _init_session():
 
 _init_session()
 
+# Live data needs a signed-in user on the allow list. A session that set up a
+# live assessment and is no longer entitled to one goes back to the wizard.
+live_allowed = auth.live_access_allowed()
+if st.session_state.setup_complete and not st.session_state.demo_mode and not live_allowed:
+    st.session_state.setup_complete = False
+
 
 # ── Load controls metadata ───────────────────────────────────────────────────
 @st.cache_data
@@ -94,6 +102,13 @@ st.markdown("""
 if not st.session_state.setup_complete:
     st.subheader("Session Setup")
     st.markdown("Configure your assessment before navigating to any module.")
+
+    if not live_allowed:
+        st.info(
+            "Assessing a real organisation uses this deployment's connected systems, "
+            "so it needs a sign-in. **Demo Mode** below needs none and uses sample data only."
+        )
+        auth.render_sign_in(key="home_sign_in")
 
     col1, col2 = st.columns([1, 1])
 
@@ -151,8 +166,10 @@ if not st.session_state.setup_complete:
     col_btn1, col_btn2, _ = st.columns([1, 1, 4])
 
     with col_btn1:
-        if st.button("Start Assessment →", type="primary", use_container_width=True):
-            if not org_name.strip():
+        if st.button("Start Assessment →", type="primary", use_container_width=True, disabled=not live_allowed):
+            if not live_allowed:
+                st.error("Sign in to start a live assessment.")
+            elif not org_name.strip():
                 st.error("Organization name is required.")
             elif not tsc_selected:
                 st.error("Select at least one TSC category.")
@@ -261,5 +278,8 @@ with st.sidebar:
             st.caption(f"**Period:** {st.session_state.type2_start} → {st.session_state.type2_end}")
         if st.session_state.demo_mode:
             st.warning("Demo mode active")
+        user = auth.current_user()
+        if user:
+            st.caption(f"**Signed in:** {user}")
     else:
         st.info("Complete setup on the home page to unlock all modules.")

@@ -3,9 +3,14 @@ import os
 
 import streamlit as st
 
+import auth
+
 if not st.session_state.get("setup_complete"):
     st.warning("Complete session setup on the Home page first.")
     st.stop()
+
+# Live data needs a signed-in user; anyone else is limited to Demo Mode.
+auth.require_access()
 
 from engine import evidence_builder, policy_generator
 from connectors import confluence as confluence_connector
@@ -152,7 +157,7 @@ with tab2:
     )
 
     api_key_set = bool(
-        st.secrets.get("ANTHROPIC_API_KEY", os.getenv("ANTHROPIC_API_KEY", ""))
+        auth.secret("ANTHROPIC_API_KEY")
     )
     if not api_key_set:
         st.warning("ANTHROPIC_API_KEY not set — will generate a template placeholder instead of AI-generated content.")
@@ -215,7 +220,7 @@ with tab3:
     )
 
     api_key_set = bool(
-        st.secrets.get("ANTHROPIC_API_KEY", os.getenv("ANTHROPIC_API_KEY", ""))
+        auth.secret("ANTHROPIC_API_KEY")
     )
     if not api_key_set:
         st.warning("ANTHROPIC_API_KEY not set — narrative will use template format.")

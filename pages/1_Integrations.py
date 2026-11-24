@@ -1,10 +1,15 @@
 import streamlit as st
+
+import auth
 from datetime import datetime
 
 # Guard — require setup
 if not st.session_state.get("setup_complete"):
     st.warning("Complete session setup on the Home page first.")
     st.stop()
+
+# Live data needs a signed-in user; anyone else is limited to Demo Mode.
+auth.require_access()
 
 from connectors import (
     okta, google_workspace, github, aws, gcp, azure,

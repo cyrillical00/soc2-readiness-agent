@@ -9,9 +9,11 @@ from datetime import datetime
 import requests
 import streamlit as st
 
+from auth import secret
+
 
 def _get_webhook() -> str:
-    return st.secrets.get("SLACK_WEBHOOK_URL", os.getenv("SLACK_WEBHOOK_URL", ""))
+    return secret("SLACK_WEBHOOK_URL")
 
 
 def is_configured() -> bool:
